@@ -10,7 +10,7 @@ export const Contacts = () => {
   const dispatch = useDispatch();
 
   const handleDelete = id => {
-    dispatch(deleteContact.id);
+    dispatch(deleteContact(id));
   };
 
   const getFilteredContacts = () => {
