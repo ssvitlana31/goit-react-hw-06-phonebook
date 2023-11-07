@@ -1,40 +1,39 @@
 import React from 'react';
 import { useState } from 'react';
-import PropTypes from 'prop-types';
 import { Form, Label, Input, Button } from './Form.styled';
 import { nanoid } from 'nanoid';
+import { useDispatch, useSelector } from 'react-redux';
+import { addNewContact } from 'redux/contactsSlice';
+import { selectContacts } from 'redux/selector';
 
-export const InputContacts = ({ onAddContact }) => {
-  const [name, setName] = useState('');
-  const [number, setNumber] = useState('');
+const initialState = {
+  name: '',
+  number: '',
+};
+
+export const InputContacts = () => {
+  const [inputData, setInputData] = useState(initialState);
+  const { name, number } = inputData;
+  const contacts = useSelector(selectContacts);
+  const dispatch = useDispatch();
 
   const handleSubmit = e => {
     e.preventDefault();
-    const contact = {
-      number: number.trim(),
-      name: name.trim(),
-      id: nanoid(),
-    };
 
-    if (!name.trim()) {
+    const newContact = contacts.some(
+      newName => newName.name.toLowerCase() === name.toLowerCase()
+    );
+    if (newContact) {
+      alert(`${name} is already exist`);
       return;
     }
 
-    onAddContact(contact);
-
-    setName('');
-    setNumber('');
+    dispatch(addNewContact({ name, number, id: nanoid() }));
+    setInputData(initialState);
   };
 
-  const handleInputChange = e => {
-    const { name, value } = e.target;
-    if (name === 'name') {
-      setName(value);
-    } else if (name === 'number') {
-      setNumber(value);
-    }
-  };
-
+  const handleInputChange = e =>
+    setInputData({ ...inputData, [e.target.name]: e.target.value });
   return (
     <>
       <Form onSubmit={handleSubmit}>
@@ -64,8 +63,4 @@ export const InputContacts = ({ onAddContact }) => {
       </Form>
     </>
   );
-};
-
-InputContacts.propTypes = {
-  onAddContact: PropTypes.func.isRequired,
 };
