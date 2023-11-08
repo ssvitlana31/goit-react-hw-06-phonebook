@@ -14,8 +14,8 @@ export const Contacts = () => {
   };
 
   const getFilteredContacts = () => {
-    return contacts.filter(contacts =>
-      contacts.name.toLowerCase().includes(filter.toLowerCase())
+    return contacts.filter(el =>
+      el.name.toLowerCase().includes(filter.toLowerCase())
     );
   };
 
